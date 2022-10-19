@@ -1,0 +1,35 @@
+package com.bridgelabz.simplehttp;
+
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+public class SimpleHttpServer {
+    public static int DEFAULT_PORT=9000;
+    public static int port;
+    private HttpServer httpServer;
+    public void start(int port)
+    {
+        this.port=port;
+        try {
+            httpServer=HttpServer.create(new InetSocketAddress(port),0);
+            System.out.println("server started at port :"+port);
+            httpServer.createContext("/",new Handlers.RootHandler());
+            httpServer.createContext("/echoHeader",new Handlers.EchoHeaderHandler());
+            httpServer.createContext("/echoGet",new Handlers.EchoGetHandler());
+            httpServer.createContext("/echoPost",new Handlers.EchoPostHandler());
+            httpServer.setExecutor(null);
+            httpServer.start();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    public static void main(String[] args) {
+        SimpleHttpServer simpleHttpServer=new SimpleHttpServer();
+        simpleHttpServer.start(SimpleHttpServer.DEFAULT_PORT);
+    }
+}
+
+
